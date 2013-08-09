@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>小BUG,却浪费时间(fopen参数问题) | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="很久没用C写文件了，百度了下fopen，直接就写了下面的代码：
+1
+2
+3
+FILE* f = fopen(&quot;xxx.bin&quot;, &quot;w&quot;);
+fwrite(pData, dataSize, 1, f);
+fclose(f);
+
+产生的文件却比预期大5个字节，心想可能是fwrite写文件时的问题，测试bug的代码如下：
+1
+2
+3
+4
+5
+6
+FILE* f = fopen(&quot;xxx.bin&quot;, &quot;w&quot;);
+for(int i = 0; i &lt; dataSize; i++)
+{
+    putc(pData[i], f);
+}
+fclose(f);
+
+结果依然还是大5个字节，遂开内存对比写出的文件，结果发现文件开头也对，结尾也对，字节数却“平白无故”多5个......
+再找了N次，发现每个出现0x0A的地方都出现了0x0D 0A，这不就是n自动转成了rn么。
+1
+FILE* f = fopen(&quot;xxx.bin&quot;, &quot;wb&quot;);
+
+本来内心坚定的认为C写文件不区分是否是二进制，自以为是，切记切忌~">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="小BUG,却浪费时间(fopen参数问题)"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">小BUG,却浪费时间(fopen参数问题)</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>很久没用C写文件了，百度了下fopen，直接就写了下面的代码：</p>
+<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="variable">FILE</span>* f = fopen(<span class="string">"xxx.bin"</span>, <span class="string">"w"</span>);
+<span class="function"><span class="title">fwrite</span><span class="params">(p<span class="variable">Data</span>, data<span class="variable">Size</span>, <span class="number">1</span>, f)</span>;
+<span class="title">fclose</span><span class="params">(f)</span>;
+</pre></td></tr></table></figure>
+产生的文件却比预期大5个字节，心想可能是fwrite写文件时的问题，测试bug的代码如下：</p>
+<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="variable">FILE</span>* f = fopen(<span class="string">"xxx.bin"</span>, <span class="string">"w"</span>);
+<span class="function"><span class="title">for</span><span class="params">(int i = <span class="number">0</span>; i &lt; data<span class="variable">Size</span>; i++)</span>
+{
+    <span class="title">putc</span><span class="params">(p<span class="variable">Data</span>[i], f)</span>;
+}
+<span class="title">fclose</span><span class="params">(f)</span>;
+</pre></td></tr></table></figure>
+结果依然还是大5个字节，遂开内存对比写出的文件，结果发现文件开头也对，结尾也对，字节数却“平白无故”多5个......
+再找了N次，发现每个出现0x0A的地方都出现了0x0D 0A，这不就是n自动转成了rn么。</p>
+<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>FILE* f = fopen(<span class="string">"xxx.bin"</span>, <span class="string">"wb"</span>)<span class="comment">;</span>
+</pre></td></tr></table></figure>
+本来内心坚定的认为C写文件不区分是否是二进制，自以为是，切记切忌~</p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-04-19T17:47:47.000Z"><a href="/2013/04/20/小bug却浪费时间fopen参数问题/">Apr 20 2013</a></time>
+        
+        
+  
+  <a href="/categories/C/">@C</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>

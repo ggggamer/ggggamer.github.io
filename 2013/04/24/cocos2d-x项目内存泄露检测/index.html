@@ -1,0 +1,236 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Cocos2d-x项目内存泄露检测 | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="用VS开发Cocos2d-x项目， 要增加内存泄露检测很简单。VC++的C运行库提供下面这个方法检测：
+int _CrtSetDbgFlag(int newFlag);
+
+由于这个只能在VC++环境下运行，所以应该加上预编译宏，修改AppDelegate::AppDelegate()如下：
+1
+2
+3
+4
+5
+6
+AppDelegate::AppDelegate()
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+    _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+#endif
+}
+
+
+这样，在游戏退出的时候会打印未释放的内存和相关信息。比如这样的代码：">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Cocos2d-x项目内存泄露检测"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">Cocos2d-x项目内存泄露检测</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>用VS开发Cocos2d-x项目， 要增加内存泄露检测很简单。VC++的C运行库提供下面这个方法检测：</p>
+<pre><code><span class="keyword">int</span> _CrtSetDbgFlag(<span class="keyword">int</span> newFlag);
+</code></pre>
+<p>由于这个只能在VC++环境下运行，所以应该加上预编译宏，修改<code>AppDelegate::AppDelegate()</code>如下：</p>
+<figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>AppDelegate::AppDelegate()
+{
+<span class="preprocessor">#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)</span>
+    _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+<span class="preprocessor">#endif</span>
+}
+</pre></td></tr></table></figure>
+
+<p>这样，在游戏退出的时候会打印未释放的内存和相关信息。比如这样的代码：
+<a name="more"></a></p>
+<pre><code><span class="keyword">int</span>* pData = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">101</span>];
+</code></pre>
+<p>如果在这之后未释放，打印信息会类似于这样：</p>
+<figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>Detected memory leaks!
+Dumping objects -&gt;
+{<span class="number">28318</span>} normal block at <span class="number">0x03F9EF28</span>, <span class="number">404</span> bytes <span class="keyword">long</span>.
+ Data: &lt;                &gt; CD CD CD CD CD CD CD CD CD CD CD CD CD CD CD CD 
+Object dump complete.
+</pre></td></tr></table></figure>
+
+<p>这里面包括有内存分配编号、内存类型、地址、字节数和前 16 字节的内容。<br>要显示更加详细的信息，可以增加：</p>
+<pre><code>#define <span class="keyword">new</span> <span class="keyword">new</span>(_NORMAL_BLOCK, <span class="keyword">__FILE__</span>, <span class="keyword">__LINE__</span>)
+</code></pre>
+<p>替换new为CRT debug版本的new方法，之后的打印信息会附带有文件名和行号，类似于：</p>
+<figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>Detected memory leaks!
+Dumping objects -&gt;
+e:\workspace_vs\cocos2d-<span class="number">2.1</span>beta3-x-<span class="number">2.1</span><span class="number">.1</span>\samples\cpp\hellocpp\classes\helloworldscene.cpp(<span class="number">141</span>) : {<span class="number">28318</span>} normal block at <span class="number">0x06336088</span>, <span class="number">404</span> bytes <span class="keyword">long</span>.
+ Data: &lt;                &gt; CD CD CD CD CD CD CD CD CD CD CD CD CD CD CD CD 
+Object dump complete.
+</pre></td></tr></table></figure>
+
+<p>#define的位置必须在都使用到的头文件中定义，否则还是无效。这时我们可以使用VS的预处理器。</p>
+<p>右键项目，选择“属性”，再选“配置属性”，在“c/c++&quot;分页的“预处理器”选项，增加预处理器定义:</p>
+<pre><code><span class="keyword">new</span>=<span class="keyword">new</span>(_NORMAL_BLOCK, <span class="keyword">__FILE__</span>, <span class="keyword">__LINE__</span>)
+</code></pre>
+<p>代码里不用再增加预处理了，也避免了在移植时找不到此new方法的定义。</p>
+<p>更多的，比如每次都是在第300次内存分配时申请的内存未释放，就可以使用下面的代码让程序在第300次分配时停下来：</p>
+<pre><code><span class="attribute">_CrtSetBreakAlloc(300);
+</code></pre>
+<p>其他相关辅助方法和打印信息的具体含义都可以查看<a href="http://msdn.microsoft.com/zh-cn/library/e5ewb1h3(v=VS.80).aspx" title="启用内存泄漏检测">MSDN的这篇文章</a>。</p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-04-24T14:45:19.000Z"><a href="/2013/04/24/cocos2d-x项目内存泄露检测/">Apr 24 2013</a></time>
+        
+        
+  
+  <a href="/categories/Cocos2d-x/">@Cocos2d-x</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>

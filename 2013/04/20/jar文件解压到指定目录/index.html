@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>jar文件解压到指定目录 | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="最近项目有个需求是解开jar文件，查了下，有jar指令可用：
+1
+jar xf jarName.jar
+
+可惜的是这个指令不能解压缩到指定目录(-C指令只有在更新和新建的时候才可以，对x无效)，直接在当前目录解压的话会导致文件混乱，考虑用bat文件来做：
+1
+2
+3
+copy jarName.jar tmp
+cd tmp
+jar xf jarName.jar
+
+这样功能是实现了，但是不可移植，不完美。最后考虑用java自带的java.util.jar包来实现。核心代码如下，仅供参考。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="jar文件解压到指定目录"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">jar文件解压到指定目录</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>最近项目有个需求是解开jar文件，查了下，有jar指令可用：</p>
+<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>jar xf jarName.jar
+</pre></td></tr></table></figure>
+可惜的是这个指令不能解压缩到指定目录(-C指令只有在更新和新建的时候才可以，对x无效)，直接在当前目录解压的话会导致文件混乱，考虑用bat文件来做：
+<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>copy jarName.jar tmp
+cd tmp
+jar xf jarName.jar
+</pre></td></tr></table></figure>
+这样功能是实现了，但是不可移植，不完美。最后考虑用java自带的java.util.jar包来实现。核心代码如下，仅供参考。
+<a name="more"></a><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+</pre></td><td class="code"><pre><span class="javadoc">/**
+ * 解压缩jar文件到指定目录下
+ * */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> unZip(String zipFileName, String outDir) {
+	<span class="comment">// 处理传入的路径可能带/也可能不带/的情况</span>
+	<span class="keyword">if</span> (outDir.endsWith(<span class="string">"/"</span>) || outDir.endsWith(<span class="string">"\\"</span>)) {
+		outDir.replace(<span class="string">"\\"</span>, <span class="string">"/"</span>);
+		outDir = outDir.substring(<span class="number">0</span>, outDir.length() - <span class="number">1</span>);
+	}
+	<span class="keyword">try</span> {
+		JarFile jarFile = <span class="keyword">new</span> JarFile(zipFileName);
+		Enumeration entries = jarFile.entries();
+		<span class="keyword">while</span> (entries.hasMoreElements()) {
+			JarEntry je = entries.nextElement();
+			<span class="keyword">if</span> (!je.isDirectory()) {
+				String fileName = outDir + <span class="string">"/"</span> + je.getName();
+				fileName = fileName.replace(<span class="string">'\\'</span>, <span class="string">'/'</span>);
+
+				<span class="comment">// 建立必须的目录</span>
+				String dir = fileName.substring(<span class="number">0</span>, fileName.lastIndexOf(<span class="string">"/"</span>));
+				File dirFile = <span class="keyword">new</span> File(dir);
+				<span class="keyword">if</span> (!dirFile.exists()) {
+					dirFile.mkdirs();
+				}
+
+				File outFile = <span class="keyword">new</span> File(fileName);
+				FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(outFile);
+
+				InputStream is = jarFile.getInputStream(je);
+				<span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[is.available()];
+				is.read(data);<span class="comment">// 此处有bug,点这里查看</span>
+				is.close();
+
+				fos.write(data);
+				fos.flush();
+				fos.close();
+			}
+		}
+		jarFile.close();
+	} <span class="keyword">catch</span> (IOException e) {
+		e.printStackTrace();
+	}
+}
+</pre></td></tr></table></figure>
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-04-19T17:50:00.000Z"><a href="/2013/04/20/jar文件解压到指定目录/">Apr 20 2013</a></time>
+        
+        
+  
+  <a href="/categories/Java/">@Java</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Cocos2d-x文本显示 | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="Cocos2d-x的文本显示由以下类实现：
+1
+2
+3
+CCLabelAtlas
+CCLabelBMFont
+CCLabelTTF
+
+
+三者的实现方式不一样，对应的，适用范围也不一样。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Cocos2d-x文本显示"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">Cocos2d-x文本显示</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>Cocos2d-x的文本显示由以下类实现：</p>
+<figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>CCLabelAtlas
+CCLabelBMFont
+CCLabelTTF
+</pre></td></tr></table></figure>
+
+<p>三者的实现方式不一样，对应的，适用范围也不一样。</p>
+<p><a name="more"></a>
+首先，要显示文本，必须实现CCLabelProtocol：</p>
+<figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="comment">// sets a new label using an string</span>
+<span class="keyword">virtual</span> <span class="keyword">void</span> setString(<span class="keyword">const</span> <span class="keyword">char</span> *label) = <span class="number">0</span>;
+<span class="comment">/** returns the string that is rendered */</span>
+<span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keyword">char</span>* getString(<span class="keyword">void</span>) = <span class="number">0</span>;
+</pre></td></tr></table></figure>
+
+<ol>
+<li><font color="#ff0000">CCLabelAtlas</font>
+
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">CC_DLL</span> <span class="title">CCLabelAtlas</span> :</span> public CCAtlasNode, public CCLabelProtocol
+</code></pre>
+<p>内部使用一张资源图和初始定义好的图元间距等信息来实现。</p>
+<p>资源图片本身可以是 任意行*任意列 的，行数和列数由图片尺寸和图元间距计算。</p>
+<p>当要显示的文本更改时，调用CCLabelAtlas::updateAtlasValues()方法，重新生成。</p>
+<pre><code><span class="title">void</span> CCLabelAtlas::updateAtlasValues()
+</code></pre>
+<p>字符串中的每一个字符是怎么对应的呢？</p>
+<figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="keyword">for</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)
+{
+	<span class="keyword">unsigned</span> <span class="keyword">char</span> a = s[i] - m_uMapStartChar;<span class="comment">// ASCII码之差</span>
+	<span class="keyword">float</span> row = (<span class="keyword">float</span>) (a % m_uItemsPerRow);
+	<span class="keyword">float</span> col = (<span class="keyword">float</span>) (a / m_uItemsPerRow);
+<span class="comment">//...</span>
+</pre></td></tr></table></figure>
+
+<p>根据字符和传入的“首字符”之差来计算图元在图片中的位置，所以此类图片的制作要跟ASCII码表对应。</p>
+<p>此类的效率很高，只有在文本更改的时候才会重新计算绘制区域，且一次性绘制完成。</p>
+<p>一个典型的使用用例：Cocosd-x引擎显示FPS。</p>
+</li>
+<li><p><font color="#ff0000">CCLabelBMFont</font></p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">CC_DLL</span> <span class="title">CCLabelBMFont</span> :</span> public CCSpriteBatchNode, public CCLabelProtocol, public CCRGBAProtocol
+</code></pre>
+<p>继承了CCSpriteBatchNode，表明此节点的绘制是“批次”的，效率高，同时也间接继承了CCTextureProtocol的全部特性。</p>
+<p>另外，CCLabelBMFont还实现了CCRGBAProtocol，可设置此节点的颜色和不透明度。</p>
+<p>初始化时以fnt文件定义的图片为源图，以字符串长度为容量初始化批绘制节点。</p>
+<pre><code>CCSpriteBatchNode::initWithTexture(<span class="built_in">texture</span>, strlen(theString))
+</code></pre>
+<p>字符串中的每一个字符都根据由fnt文件定义的字符边框、X和Y偏移和间距等信息初始化后作为一个子节点加入进来。</p>
+<p>加入时，子节点的TAG为字符在字符串中的位置，所以，在以后可能的更新操作中，都可以按此来直接取到子节点。</p>
+<pre><code>characterSprite = (CCSprite<span class="variable">*)</span>this-&gt;getChildByTag(j + skip)
+</code></pre>
+<p>要使用CCLabelBMFont，必须有对应的工具生成fnt文件，相关编辑器链接：</p>
+<p><a href="http://glyphdesigner.71squared.com/"><a href="http://glyphdesigner.71squared.com/">http://glyphdesigner.71squared.com/</a></a> (Commercial, Mac OS X)</p>
+<p><a href="http://www.n4te.com/hiero/hiero.jnlp"><a href="http://www.n4te.com/hiero/hiero.jnlp">http://www.n4te.com/hiero/hiero.jnlp</a></a> (Free, Java)</p>
+<p><a href="http://slick.cokeandcode.com/demos/hiero.jnlp"><a href="http://slick.cokeandcode.com/demos/hiero.jnlp">http://slick.cokeandcode.com/demos/hiero.jnlp</a></a> (Free, Java)</p>
+<p><a href="http://www.angelcode.com/products/bmfont/"><a href="http://www.angelcode.com/products/bmfont/">http://www.angelcode.com/products/bmfont/</a></a> (Free, Windows only)</p>
+</li>
+<li><p><font color="#ff0000">CCLabelTTF</font></p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">CC_DLL</span> <span class="title">CCLabelTTF</span> :</span> public CCSprite, public CCLabelProtocol
+</code></pre>
+<p>CCLabelTTF本身继承CCSprite，所以其显示由CCTexture2D实现。</p>
+<p>文本发生更改时，调用逻辑依次为：</p>
+<figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre><span class="comment">//1.</span>
+<span class="keyword">void</span> CCLabelTTF::updateTexture()
+<span class="comment">//2.</span>
+<span class="keyword">bool</span> CCTexture2D::initWithString(<span class="keyword">const</span> <span class="keyword">char</span> *text, <span class="keyword">const</span> CCSize&amp; dimensions, CCTextAlignment hAlignment, CCVerticalTextAlignment vAlignment, <span class="keyword">const</span> <span class="keyword">char</span> *fontName, <span class="keyword">float</span> fontSize)
+<span class="comment">//3.此方法要根据不同平台调用不同平台的内部实现</span>
+<span class="keyword">bool</span> CCImage::initWithString(
+                           <span class="keyword">const</span> <span class="keyword">char</span> *    pText, 
+                           <span class="keyword">int</span>             nWidth<span class="comment">/* = 0*/</span>, 
+                           <span class="keyword">int</span>             nHeight<span class="comment">/* = 0*/</span>,
+                           ETextAlign      eAlignMask<span class="comment">/* = kAlignCenter*/</span>,
+                           <span class="keyword">const</span> <span class="keyword">char</span> *    pFontName<span class="comment">/* = nil*/</span>,
+                           <span class="keyword">int</span>             nSize<span class="comment">/* = 0*/</span>)
+</pre></td></tr></table></figure>
+
+<p>此方法在每一次的文本改变都会重新生成一张图片，效率较其他两种慢。</p>
+<p>但是由于此类是调用平台内部实现的，在考虑使用机器字体的时候可以选择这种。</p>
+</li>
+</ol>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-05-27T15:45:11.000Z"><a href="/2013/05/27/Cocos2d-x文本显示/">May 27 2013</a></time>
+        
+        
+  
+  <a href="/categories/Cocos2d-x/">@Cocos2d-x</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>

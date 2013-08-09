@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>QQ2013登录界面(Java Swing) | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="先看一下我们要实现的目标：">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="QQ2013登录界面(Java Swing)"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">QQ2013登录界面(Java Swing)</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>先看一下我们要实现的目标：</p>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/33/target.png"><img src="http://www.ggggamer.com/wp-content/uploads/33/target.png" alt="" title="target"></a>
+<a name="more"></a>
+基础部分：</p>
+<p>1. 要实现一个非系统主题窗口（异形窗口）。</p>
+<p>2.由于是Java实现，需要自定义文本框、按钮等组件的绘制。</p>
+<p>3.要实现背景动画。</p>
+<p>4.要实现单击“设置”按钮时Flipable（来自于QT）的效果。</p>
+<p><span style="color: #ff0000;">第一步，绘制背景图</span></p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>JFrame jFrame = <span class="keyword">new</span> JFrame();
+JLabel backImg = <span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(<span class="string">"res/Loginpanel2/night.jpg"</span>));
+jFrame.add(backImg);
+jFrame.setUndecorated(<span class="keyword">true</span>);<span class="comment">// 设置异形窗口前提,去掉window该有的一些控件</span>
+jFrame.setSize(<span class="number">380</span>, <span class="number">292</span>);
+jFrame.setLocationRelativeTo(<span class="keyword">null</span>);<span class="comment">// 屏幕居中对齐</span>
+jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+jFrame.setVisible(<span class="keyword">true</span>);
+</pre></td></tr></table></figure>
+到这里我们显示了一张纯背景图，无任何窗口修饰，在后续的步骤中，我们将用自定义组件添加上。</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">new</span> ImageIcon(<span class="string">"res/Loginpanel2/night.jpg"</span>);
+</pre></td></tr></table></figure>
+在将程序打包成jar之后会因为资源加载失败无法显示，此问题的解决参加<a href="http://www.ggggamer.com/?p=69">这里</a></p>
+<p><span style="color: #ff0000;">第二步，实现窗口的圆角</span></p>
+<p>有几种实现方式：</p>
+<p>1.设置为RoundRectangle2D形状</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>Shape shape = <span class="keyword">new</span> RoundRectangle2D.Float(<span class="number">0</span>, <span class="number">0</span>, jFrame.getWidth(), jFrame.getHeight(), <span class="number">10.0</span>f, <span class="number">10.0</span>f);
+AWTUtilities.setWindowShape(jFrame, shape);
+</pre></td></tr></table></figure>
+效果：</p>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/33/shape1.png"><img src="http://www.ggggamer.com/wp-content/uploads/33/shape1.png" alt="" title="shape1"></a></p>
+<p>还是有明显的棱角。</p>
+<p>2.设置为自定义形状</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre><span class="keyword">int</span> w = ROUND_ARC;
+<span class="keyword">int</span> h = ROUND_ARC;
+<span class="keyword">int</span> _width = jFrame.getWidth();
+<span class="keyword">int</span> _height = jFrame.getHeight();
+GeneralPath path = <span class="keyword">new</span> GeneralPath();
+path.append(<span class="keyword">new</span> Ellipse2D.Float(w, h, -w, -h), <span class="keyword">true</span>);
+path.append(<span class="keyword">new</span> Line2D.Float(<span class="number">0</span>, h, <span class="number">0</span>, _height - h), <span class="keyword">true</span>);
+path.append(<span class="keyword">new</span> Ellipse2D.Float(w, _height - h, -w, h), <span class="keyword">true</span>);
+path.append(<span class="keyword">new</span> Line2D.Float(w, _height, _width - w, _height), <span class="keyword">true</span>);
+path.append(<span class="keyword">new</span> Ellipse2D.Float(_width, _height, -w, -h), <span class="keyword">true</span>);
+path.append(<span class="keyword">new</span> Line2D.Float(_width, _height - h, _width, h), <span class="keyword">true</span>);
+path.append(<span class="keyword">new</span> Ellipse2D.Float(_width - w, h, w, -h), <span class="keyword">true</span>);
+path.append(<span class="keyword">new</span> Line2D.Float(_width - w, <span class="number">0</span>, w, <span class="number">0</span>), <span class="keyword">true</span>);
+AWTUtilities.setWindowShape(jFrame, path);
+</pre></td></tr></table></figure>
+效果：
+<a href="http://www.ggggamer.com/wp-content/uploads/33/shape2.png"><img src="http://www.ggggamer.com/wp-content/uploads/33/shape2.png" alt="" title="shape2"></a>
+较第一种更好，但是Ellipse2D切割的效果不明显。</p>
+<p><span style="color: #ff0000;">第三步，增加输入控件和装饰控件</span></p>
+<p>1.添加输入控件
+<a href="http://www.ggggamer.com/wp-content/uploads/33/step2.png"><img src="http://www.ggggamer.com/wp-content/uploads/33/step2.png" alt="" title="step2"></a></p>
+<p>增加的控件为：</p>
+<p>标签（包括图片标签）、按钮、复选框、文本框（包括密码框）</p>
+<p>2.添加自定义的标题栏(设置、最小化和关闭按钮)</p>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/33/step3.png"><img src="http://www.ggggamer.com/wp-content/uploads/33/step3.png" alt="" title="step3"></a></p>
+<p>3.完善界面，增加九宫格图片背景</p>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/33/step4.png"><img src="http://www.ggggamer.com/wp-content/uploads/33/step4.png" alt="" title="step4"></a></p>
+<p>4.设置窗口icon</p>
+<p>icon一般的格式都是.ico，此类文件需要导入第三方库解析。</p>
+<p>&nbsp;</p>
+<p>附录：
+1.自定义控件的实现：
+（1）按钮<a href="http://www.ggggamer.com/?p=40" title="QQ2013组件 TButton">TButton</a>
+（2）复选框<a href="http://www.ggggamer.com/?p=46" title="QQ2013组件 TCheckBox">TCheckBox</a>
+（3）文本框<a href="http://www.ggggamer.com/?p=49" title="QQ2013组件 TTextField">TTextField</a>
+（4）九宫格图片<a href="http://www.ggggamer.com/?p=55" title="QQ2013组件 TScale9Image">TScale9Image</a>
+2.自定义标题栏的事件处理：
+<a href="http://www.ggggamer.com/?p=60" title="Swing窗口标题栏事件处理">Swing窗口标题栏事件处理</a></p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-04-19T18:07:02.000Z"><a href="/2013/04/20/qq2013登录界面java-swing/">Apr 20 2013</a></time>
+        
+        
+  
+  <a href="/categories/Java/">@Java</a>, <a href="/categories/Java/Swing/">@Swing</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>

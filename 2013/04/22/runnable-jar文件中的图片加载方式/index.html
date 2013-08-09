@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Runnable jar文件中的图片加载方式 | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="用Swing做界面时很多童鞋会跟我一样遇到图片在开发环境中显示正常，导出jar包后无法显示的问题。
+这里说下我遇到的几种情况。
+1.资源加载方式问题
+在很多Swing开发的教程中会有这样的代码：
+1
+JLabel backImg = new JLabel(new ImageIcon(&quot;res/xxx.png&quot;));
+
+这个在开发环境中是可以正常显示的，可是如果用Eclipse等工具导出为Runnable Jar File之后，图片加载不进来。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Runnable jar文件中的图片加载方式"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">Runnable jar文件中的图片加载方式</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>用Swing做界面时很多童鞋会跟我一样遇到图片在开发环境中显示正常，导出jar包后无法显示的问题。</p>
+<p>这里说下我遇到的几种情况。</p>
+<p>1.资源加载方式问题</p>
+<p>在很多Swing开发的教程中会有这样的代码：</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>JLabel backImg = <span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(<span class="string">"res/xxx.png"</span>));
+</pre></td></tr></table></figure>
+这个在开发环境中是可以正常显示的，可是如果用Eclipse等工具导出为Runnable Jar File之后，图片加载不进来。
+<a name="more"></a>
+一般情况下，我们会给工程设置多个source folder，目的是给不同的代码或资源区分开。</p>
+<p>比如我们设置了src和res两个source folder，分别放置代码和资源。</p>
+<p><img src="http://ggggamer.duapp.com/wp-content/uploads/69/proj01.png" alt=""></p>
+<p>TestMain的代码很简单，新建一个窗口，增加一个JLbale，显示night图片。</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(String[] args) {
+    JFrame jFrame = <span class="keyword">new</span> JFrame();
+
+    jFrame.add(<span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(<span class="string">"res/night.jpg"</span>)));
+
+    jFrame.pack();
+    jFrame.setLocationRelativeTo(<span class="keyword">null</span>);
+    jFrame.setVisible(<span class="keyword">true</span>);
+}
+</pre></td></tr></table></figure>
+直接运行，图片显示是没问题，用Eclipse导出为Runnable Jar File之后运行却发现窗口的宽度和高度均为0，窗口里面啥也没显示。</p>
+<p>查看导出的jar文件，就会发现，这两个文件夹下的文件会导出到同一级别的目录里面。</p>
+<p><img src="http://ggggamer.duapp.com/wp-content/uploads/69/jar01.png" alt=""></p>
+<p>所以，在设置了source folder之后，这个文件夹的结构是透明的，要忽略掉。</p>
+<p>加载图片一般使用如下代码：</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="keyword">static</span> Image getImage(String fileName) {
+    <span class="keyword">try</span> {
+        <span class="keyword">return</span> ImageIO.read(UIUtils.class.getResourceAsStream(fileName));
+    } <span class="keyword">catch</span> (IOException e) {
+        e.printStackTrace();
+    }
+    <span class="keyword">return</span> <span class="keyword">null</span>;
+}
+</pre></td></tr></table></figure>
+加载的部分代码对应修改为：</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>jFrame.add(<span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(getImage(<span class="string">"/night.jpg"</span>))));
+</pre></td></tr></table></figure>
+&nbsp;</p>
+<p>2.文件名的大小写问题</p>
+<p>在windows环境中，文件名是不区分大小写的，下面的两行代码等价。</p>
+<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>jFrame.add(<span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(getImage(<span class="string">"/NIGHt.jpg"</span>))));
+jFrame.add(<span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(getImage(<span class="string">"/night.jpg"</span>))));
+</pre></td></tr></table></figure>
+在文件名大下写敏感的环境中运行时，会出现无法加载的情况。</p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-04-21T16:31:43.000Z"><a href="/2013/04/22/runnable-jar文件中的图片加载方式/">Apr 22 2013</a></time>
+        
+        
+  
+  <a href="/categories/Java/">@Java</a>, <a href="/categories/Java/Swing/">@Swing</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>

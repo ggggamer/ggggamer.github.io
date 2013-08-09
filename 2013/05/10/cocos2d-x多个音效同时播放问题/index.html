@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Cocos2d-x多个音效同时播放问题 | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="正常情况下，直接使用SimpleAudioEngine播放音效很简单，但同时也很有效。
+基本的使用可以参加前一篇文章，点这里。只有少数情况下会出现非预期情况。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Cocos2d-x多个音效同时播放问题"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">Cocos2d-x多个音效同时播放问题</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>正常情况下，直接使用SimpleAudioEngine播放音效很简单，但同时也很有效。</p>
+<p>基本的使用可以参加前一篇文章，<a href="http://www.ggggamer.com/?p=185" title="Cocos2d-x音乐和音效播放">点这里</a>。只有少数情况下会出现非预期情况。</p>
+<a name="more"></a>
+
+<ol>
+<li><p>文件路径错误</p>
+<p> SimpleAudioEngine使用以下代码加载文件：</p>
+<pre><code class="lang-cpp"> CCFileUtils::sharedFileUtils()-&gt;fullPathForFilename(szPath);
+</code></pre>
+<p> 这个跟载入图片等资源时使用的代码稍微有所不同：</p>
+<pre><code class="lang-cpp"> CCFileUtils::sharedFileUtils()-&gt;fullPathFromRelativePath(pathKey.c_str());
+</code></pre>
+<p> 在载入图片资源时，会根据设计分辨率自动加上资源类型的前缀。</p>
+<p> 在AppDelegate::applicationDidFinishLaunching()方法中：</p>
+ <figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="code"><pre><span class="comment">// if the frame's height is larger than the height of medium resource size, select large resource.</span>
+<span class="keyword">if</span> (frameSize.height &gt; mediumResource.size.height)
+{ 
+	CCFileUtils::sharedFileUtils()-&gt;setResourceDirectory(largeResource.directory);
+	pDirector-&gt;setContentScaleFactor(largeResource.size.height/designResolutionSize.height);
+}
+<span class="comment">// if the frame's height is larger than the height of small resource size, select medium resource.</span>
+<span class="keyword">else</span> <span class="keyword">if</span> (frameSize.height &gt; smallResource.size.height)
+{ 
+	CCFileUtils::sharedFileUtils()-&gt;setResourceDirectory(mediumResource.directory);
+	pDirector-&gt;setContentScaleFactor(mediumResource.size.height/designResolutionSize.height);
+}
+<span class="comment">// if the frame's height is smaller than the height of medium resource size, select small resource.</span>
+<span class="keyword">else</span>
+{ 
+	CCFileUtils::sharedFileUtils()-&gt;setResourceDirectory(smallResource.directory);
+	pDirector-&gt;setContentScaleFactor(smallResource.size.height/designResolutionSize.height);
+}
+</pre></td></tr></table></figure>
+
+<p> 也就是说，载入图片的时候可能会自动加上iphone/ipad/ipadhd等前缀，而加载音频文件的时候不会。</p>
+<p> 这是因为，屏幕分辨率不一样的时候，图片资源会有所不同，但音频文件基本不会变化，所以我们可以把音频文件放到外一级的目录（跟iphone/ipad/ipadhd同级别）。</p>
+</li>
+<li><p>未预加载音乐或音效文件</p>
+<p> 这个很简单，每次播放音频文件，底层都得读取和解析文件，处理相关初始化，明显影响运行效率，在高帧率游戏时更是如此。解决此问题只需要在游戏载入的时候使用以下接口：</p>
+ <figure class="highlight lang-cpp"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="keyword">void</span> preloadBackgroundMusic(<span class="keyword">const</span> <span class="keyword">char</span>* pszFilePath);
+<span class="keyword">void</span> preloadEffect(<span class="keyword">const</span> <span class="keyword">char</span>* pszFilePath);
+</pre></td></tr></table></figure>
+</li>
+<li><p>同时播放的音效文件超过一定数量</p>
+<p> 有些时候，同时播放的音效可能会达到5个，甚至10个。这种时候在真机上可能会出现音频文件播放异常。</p>
+<p> 查看Android音频播放部分的源码(以playEffect()为例)：</p>
+<p> CocosDenshion\android\SimpleAudioEngine.cpp通过一层层的调用，最终使用的是org.cocos2dx.lib.Cocos2dxSound类。</p>
+<p> 而Cocos2dxSound调用的是android.media.SoundPool来对音效文件进行管理。</p>
+<pre><code class="lang-java"> mSoundPool = <span class="keyword">new</span> SoundPool(Cocos2dxSound.MAX_SIMULTANEOUS_STREAMS_DEFAULT, AudioManager.STREAM_MUSIC, Cocos2dxSound.SOUND_QUALITY);
+</code></pre>
+<p> 第一个参数的定义了能同时播放的音效个数，当超过此数量时，会停掉之前的音效播放器。</p>
+<p> 默认Cocos2dxSound.MAX_SIMULTANEOUS_STREAMS_DEFAULT为5，可以调整为更适合游戏的值。</p>
+<p> 更详细的，可以点击这里<a href="http://developer.android.com/reference/android/media/SoundPool.html" title="SoundPool API">google的官方API文档</a>查看。</p>
+</li>
+</ol>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-05-10T14:36:23.000Z"><a href="/2013/05/10/cocos2d-x多个音效同时播放问题/">May 10 2013</a></time>
+        
+        
+  
+  <a href="/categories/Cocos2d-x/">@Cocos2d-x</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>QQ2013组件 TScale9Image | GGGGamer</title>
+  <meta name="author" content="GGGGamer">
+  
+  <meta name="description" content="九宫格图片，适用于用图片填充背景，或做普通放大。
+效果：→">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="QQ2013组件 TScale9Image"/>
+  <meta property="og:site_name" content="GGGGamer"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="GGGGamer" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <h1 id="site-title" class="title">
+    <a href="/">GGGGamer</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Indie Game Developer</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:ggggamer.github.io/">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/C/">C</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/Cocos2d-x/">Cocos2d-x</a>&nbsp;<small>(7)</small></li>
+  
+    <li><a href="/categories/Foundation/">Foundation</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Java/">Java</a>&nbsp;<small>(10)</small></li>
+  
+    <li><a href="/categories/Java/Swing/">Swing</a>&nbsp;<small>(7)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+
+  <nav class="other">
+  <ul>
+    <li>
+      <a href="http://weibo.com/ggggamer" target="_blank">关注我的微博</a>
+    </li>
+  </ul>
+</nav>
+
+</div></header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">QQ2013组件 TScale9Image</h1>
+  
+
+    
+  </header>
+  <section class="entry">
+    
+      <p>九宫格图片，适用于用图片填充背景，或做普通放大。
+效果：<a href="http://www.ggggamer.com/wp-content/uploads/55/scale9Pre.png"><img src="http://www.ggggamer.com/wp-content/uploads/55/scale9Pre.png" alt="" title="scale9Pre"></a>→<a href="http://www.ggggamer.com/wp-content/uploads/55/scale9End.png"><img src="http://www.ggggamer.com/wp-content/uploads/55/scale9End.png" alt="" title="scale9End"></a>
+<a name="more"></a>
+继承BufferedImage</p>
+<figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TScale9Image</span> <span class="keyword">extends</span> <span class="title">BufferedImage</span>
+</pre></td></tr></table></figure>
+定义确定九宫格需要的参数：Image srcImage, left, top, bottom, right.
+<figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="keyword">public</span> TScale9Image(Image src, <span class="keyword">int</span> width, <span class="keyword">int</span> height);
+<span class="keyword">public</span> TScale9Image(Image src, <span class="keyword">int</span> width, <span class="keyword">int</span> height, <span class="keyword">int</span> top, <span class="keyword">int</span> bottom, <span class="keyword">int</span> left, <span class="keyword">int</span> right);
+</pre></td></tr></table></figure>
+设置九宫格目标图片尺寸 width height
+<figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">super</span>(width, height, BufferedImage.TYPE_INT_ARGB);
+</pre></td></tr></table></figure>
+将九宫格分为9个区域,如图所示:
+<a href="http://www.ggggamer.com/wp-content/uploads/55/scale9Guide.png"><img src="http://www.ggggamer.com/wp-content/uploads/55/scale9Guide.png" alt="" title="scale9Guide"></a>
+放大部分代码：
+<figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre>Graphics g = getGraphics();
+
+<span class="comment">// 绘制1 3 7 9</span>
+g.drawImage(src, <span class="number">0</span>, <span class="number">0</span>, left, top, <span class="number">0</span>, <span class="number">0</span>, left, top, <span class="keyword">null</span>);
+g.drawImage(src, getWidth() - right, <span class="number">0</span>, getWidth(), top, src.getWidth(<span class="keyword">null</span>) - right, <span class="number">0</span>, src.getWidth(<span class="keyword">null</span>), top, <span class="keyword">null</span>);
+g.drawImage(src, <span class="number">0</span>, getHeight() - bottom, left, getHeight(), <span class="number">0</span>, src.getHeight(<span class="keyword">null</span>) - bottom, left, src.getHeight(<span class="keyword">null</span>), <span class="keyword">null</span>);
+g.drawImage(src, getWidth() - right, getHeight() - bottom, getWidth(), getHeight(), src.getWidth(<span class="keyword">null</span>) - right, src.getHeight(<span class="keyword">null</span>) - bottom, src.getWidth(<span class="keyword">null</span>), src.getHeight(<span class="keyword">null</span>), <span class="keyword">null</span>);
+
+<span class="comment">// 绘制5</span>
+g.drawImage(src, left, top, getWidth() - right, getHeight() - bottom, left, top, src.getWidth(<span class="keyword">null</span>) - right, src.getHeight(<span class="keyword">null</span>) - bottom, <span class="keyword">null</span>);
+
+<span class="comment">// 绘制2 4 6 8</span>
+g.drawImage(src, left, <span class="number">0</span>, getWidth() - right, top, left, <span class="number">0</span>, src.getWidth(<span class="keyword">null</span>) - right, top, <span class="keyword">null</span>);
+g.drawImage(src, <span class="number">0</span>, top, left, getHeight() - bottom, <span class="number">0</span>, top, left, src.getHeight(<span class="keyword">null</span>) - bottom, <span class="keyword">null</span>);
+g.drawImage(src, getWidth() - right, top, getWidth(), getHeight() - bottom, src.getWidth(<span class="keyword">null</span>) - right, top, src.getWidth(<span class="keyword">null</span>), src.getHeight(<span class="keyword">null</span>) - bottom, <span class="keyword">null</span>);
+g.drawImage(src, left, getHeight() - bottom, getWidth() - right, getHeight(), left, src.getHeight(<span class="keyword">null</span>) - bottom, src.getWidth(<span class="keyword">null</span>) - right, src.getHeight(<span class="keyword">null</span>), <span class="keyword">null</span>);
+</pre></td></tr></table></figure>
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2013-04-19T18:26:25.000Z"><a href="/2013/04/20/qq2013组件-tscale9image/">Apr 20 2013</a></time>
+        
+        
+  
+  <a href="/categories/Java/">@Java</a>, <a href="/categories/Java/Swing/">@Swing</a>
+
+        
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2013 GGGGamer
+  
+</div>
+<div class="clearfix"></div></footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+</body>
+</html>
