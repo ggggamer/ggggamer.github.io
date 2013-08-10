@@ -102,13 +102,13 @@
     
       <p>用Swing做界面时很多童鞋会跟我一样遇到图片在开发环境中显示正常，导出jar包后无法显示的问题。</p>
 <p>这里说下我遇到的几种情况。</p>
-<p>1.资源加载方式问题</p>
-<p>在很多Swing开发的教程中会有这样的代码：</p>
-<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>JLabel backImg = <span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(<span class="string">"res/xxx.png"</span>));
-</pre></td></tr></table></figure>
-这个在开发环境中是可以正常显示的，可是如果用Eclipse等工具导出为Runnable Jar File之后，图片加载不进来。
-
+<ol>
+<li><p>资源加载方式问题</p>
+<p> 在很多Swing开发的教程中会有这样的代码：</p>
+<pre><code> JLabel backImg = <span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(<span class="string">"res/xxx.png"</span>));
+</code></pre>
+<p> 这个在开发环境中是可以正常显示的，可是如果用Eclipse等工具导出为Runnable Jar File之后，图片加载不进来。</p>
+ 
     
   </section>
   <footer>

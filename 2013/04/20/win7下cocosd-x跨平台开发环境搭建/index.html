@@ -6,10 +6,7 @@
   <title>Win7下Cocosd-x跨平台开发环境搭建 | GGGGamer</title>
   <meta name="author" content="GGGGamer">
   
-  <meta name="description" content="注：本文的最终目标是：
-开发和调试过程全部在windows平台VS中进行。
-你可以选择使用Cygwin或windows的控制台来生成so文件，用Eclipse打Android包(.apk)。
-在虚拟机或者MAC机器上使用XCode打IOS包(.ipa)。">
+  <meta name="description" content="注：本文的最终目标是：开发和调试过程全部在windows平台VS中进行。你可以选择使用Cygwin或windows的控制台来生成so文件，用Eclipse打Android包(.apk)。在虚拟机或者MAC机器上使用XCode打IOS包(.ipa)。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -100,80 +97,78 @@
   </header>
   <section class="entry">
     
-      <p>注：本文的最终目标是：</p>
-<p>开发和调试过程全部在windows平台VS中进行。</p>
-<p>你可以选择使用Cygwin或windows的控制台来生成so文件，用Eclipse打Android包(.apk)。</p>
-<p>在虚拟机或者MAC机器上使用XCode打IOS包(.ipa)。<a name="more"></a></p>
+      <p>注：本文的最终目标是：<br>开发和调试过程全部在windows平台VS中进行。<br>你可以选择使用Cygwin或windows的控制台来生成so文件，用Eclipse打Android包(.apk)。<br>在虚拟机或者MAC机器上使用XCode打IOS包(.ipa)。  <a name="more"></a></p>
 <p>一、Cocos2d-x下载</p>
-<p>1.官方地址：<a href="http://cocos2d-x.org/"><a href="http://cocos2d-x.org/">http://cocos2d-x.org/</a></a></p>
-<p>2.当前最新版本点<a href="http://cocos2d-x.googlecode.com/files/cocos2d-2.1rc0-x-2.1.2-hotfix.zip">这里</a>下载。（cocos2d-2.1rc0-x-2.1.2-hotfix.zip @ Apr.08, 2013）</p>
-<p>3.解压到工作目录(假定为：E:\workspace_vs\cocos2d-2.1beta3-x-2.1.1，本文的余下部分将使用?“${COCOS2DX_HOME}” 代替)。</p>
-<p>&nbsp;</p>
+<ol>
+<li>官方地址：<a href="http://cocos2d-x.org/"><a href="http://cocos2d-x.org/">http://cocos2d-x.org/</a></a></li>
+<li>Github地址: <a href="https://github.com/cocos2d/cocos2d-x">Github</a></li>
+<li>当前最新版本点<a href="http://cocos2d-x.googlecode.com/files/cocos2d-2.1rc0-x-2.1.2-hotfix.zip">这里</a>下载。（cocos2d-2.1rc0-x-2.1.2-hotfix.zip @ Apr.08, 2013）</li>
+<li>解压到工作目录(假定为：E:\workspace_vs\cocos2d-2.1beta3-x-2.1.1，本文的余下部分将使用<code>${COCOS2DX_HOME}</code>代替)。</li>
+</ol>
 <p>二、VS开发环境搭建</p>
-<p>根据你的VS版本直接双击cocos2d-win32.vc2010.sln或cocos2d-win32.vc2012.sln运行，不出意外，你应该能看到以下项目：</p>
-<p><a href="http://www.ggggamer.com/wp-content/uploads/64/win32_02.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/win32_02.png" alt="" title="win32_02"></a></p>
-<p>运行HelloCpp、TestCpp、HelloLua或TestLua即可测试环境是否安装成功。</p>
-<p><a href="http://www.ggggamer.com/wp-content/uploads/64/win32_03.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/win32_03.png" alt="" title="win32_03"></a></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
+<p>根据你的VS版本直接双击<code>cocos2d-win32.vc2010.sln</code>或<code>cocos2d-win32.vc2012.sln</code>运行。<br>运行HelloCpp、TestCpp、HelloLua或TestLua即可测试环境是否安装成功。</p>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/64/win32_02.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/win32_02.png" alt="" title="Cocos2d-x sln"></a>
+<a href="http://www.ggggamer.com/wp-content/uploads/64/win32_03.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/win32_03.png" alt="" title="TestCpp screenshot"></a></p>
 <p>三、Android开发环境搭建</p>
-<p>1.Android SDK安装</p>
+<ol>
+<li><p>Android SDK安装</p>
 <p>SDK Manager下载地址：<a href="http://dl.google.com/android/installer_r21.1-windows.exe"><a href="http://dl.google.com/android/installer_r21.1-windows.exe">http://dl.google.com/android/installer_r21.1-windows.exe</a></a></p>
 <p><a href="http://www.ggggamer.com/wp-content/uploads/64/sdk01.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/sdk01.png" alt="" title="sdk01"></a></p>
 <p>设置系统变量，此处设置为SDK的安装目录：</p>
-<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>ANDROID_SDK_HOME=C:<span class="command">\Program</span> Files<span class="command">\Android</span><span class="command">\android</span>-sdk
-</pre></td></tr></table></figure>
-<a href="http://www.ggggamer.com/wp-content/uploads/64/sdk02.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/sdk02.png" alt="" title="sdk02"></a></p>
+<pre><code>ANDROID_SDK_HOME=C:<span class="command">\Program</span> Files<span class="command">\Android</span><span class="command">\android</span>-sdk
+</code></pre>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/64/sdk02.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/sdk02.png" alt="" title="sdk02"></a></p>
 <p>安装完成后会自动启动SDK Manager，选择至少一个Target安装好，如选择Android 2.2(API8)：</p>
 <p><a href="http://www.ggggamer.com/wp-content/uploads/64/sdk03.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/sdk03.png" alt="" title="sdk03"></a></p>
-<p>2.为Eclipse安装ADT插件：</p>
+</li>
+<li><p>为Eclipse安装ADT插件：</p>
 <p>要使用Eclipse进行Debug和打包的话需要安装ADT。</p>
 <p>为安装速度，推荐下载离线插件包，插件包要对应SDK版本需求，SDK版本r21.1对应的ADT插件地址为：<a href="http://dl.google.com/android/ADT-21.1.0.zip"><a href="http://dl.google.com/android/ADT-21.1.0.zip">http://dl.google.com/android/ADT-21.1.0.zip</a></a></p>
 <p>下载完成之后在Eclipse安装：（菜单栏选择Help→Install New Software...）</p>
 <p><a href="http://www.ggggamer.com/wp-content/uploads/64/adt02.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/adt02.png" alt="" title="adt02"></a></p>
 <p>显示可安装插件列表，全部勾选安装。</p>
 <p>安装结束会提示是否重启(仅Eclipse)，选是，重启之后会要求设置Android SDK目录和Target，设置好。</p>
-<p>3.导入工程</p>
+</li>
+<li><p>导入工程</p>
 <p>Eclipse中右键Import，选择工程目录：</p>
-<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="formula">$<span class="special">{</span>COCOS2DX_HOME<span class="special">}</span><span class="command">\samples</span><span class="command">\Cpp</span><span class="command">\TestCpp</span><span class="command">\proj</span>.android
-</pre></td></tr></table></figure>
-不幸的是，导入的工程编译出错：
-<a href="http://www.ggggamer.com/wp-content/uploads/64/adt11.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/adt11.png" alt="" title="adt11"></a></p>
-<p>工程上右键→Properties，修改Java Build Path，增加Link Source：
-<a href="http://www.ggggamer.com/wp-content/uploads/64/adt12.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/adt12.png" alt="" title="adt12"></a></p>
-<p>选择：${COCOS2DX_HOME}\cocos2dx\platform\android\java\src</p>
+<pre><code><span class="formula">$<span class="special">{</span>COCOS2DX_HOME<span class="special">}</span><span class="command">\samples</span><span class="command">\Cpp</span><span class="command">\TestCpp</span><span class="command">\proj</span>.android
+</code></pre>
+<p>不幸的是，导入的工程编译出错：</p>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/64/adt11.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/adt11.png" alt="" title="adt11"></a></p>
+<p>工程上右键→Properties，修改Java Build Path，增加Link Source：</p>
+<p><a href="http://www.ggggamer.com/wp-content/uploads/64/adt12.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/adt12.png" alt="" title="adt12"></a></p>
+<p>选择：<code>${COCOS2DX_HOME}\cocos2dx\platform\android\java\src</code></p>
 <p><a href="http://www.ggggamer.com/wp-content/uploads/64/adt13.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/adt13.png" alt="" title="adt13"></a></p>
 <p>Java部分编译成功，安装和导入至此结束。</p>
-<p>4.启动游戏</p>
+</li>
+<li><p>启动游戏</p>
 <p>TestCpp工程上右键Debug As →Android Application。经过漫长的等待，我们会看到下面这个异常，之后程序退出。</p>
 <p><a href="http://www.ggggamer.com/wp-content/uploads/64/ndk01.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/ndk01.png" alt="" title="ndk01"></a></p>
 <p>报错所在行：</p>
-<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>System.loadLibrary(<span class="string">"testcpp"</span>);
-</pre></td></tr></table></figure>
-此行代码的作用是用JNI加载C++的库，按照linux库的命名规则，对应的库文件名应该是：libtestcpp.so。</p>
+<pre><code>System<span class="preprocessor">.loadLibrary</span>(<span class="string">"testcpp"</span>)<span class="comment">;</span>
+</code></pre>
+<p>此行代码的作用是用JNI加载C++的库，按照linux库的命名规则，对应的库文件名应该是：libtestcpp.so。</p>
 <p>这个库文件的产生需要交叉编译，新的ndk版本不需要cygwin就可以实现make，方便不少。</p>
-<p>5.交叉编译库文件</p>
-<p>a.下载ndk r8：</p>
-<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="label">http:</span>//dl<span class="preprocessor">.google</span><span class="preprocessor">.com</span>/android/ndk/android-ndk-r8e-windows-x86<span class="preprocessor">.zip</span>
-</pre></td></tr></table></figure>
-解压缩到任意目录，注意目录路径中不能带空格。</p>
-<p>b.设置系统变量：</p>
-<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>NDK_MODULE_PATH=<span class="formula">$<span class="special">{</span>COCOS2DX_HOME<span class="special">}</span>;$</span><span class="special">{</span>COCOS2DX_HOME<span class="special">}</span><span class="command">\cocos</span>2dx<span class="command">\platform</span><span class="command">\third</span>_party<span class="command">\android</span><span class="command">\prebuilt</span>
-</pre></td></tr></table></figure>
-c.交叉编译：</p>
-<p>CMD环境下进入TestCpp的项目目录：</p>
-<p><figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
+</li>
+<li><p>交叉编译库文件</p>
+<p>a.    下载ndk r8并解压到任意目录，注意目录路径中不能带空格。</p>
+<pre><code>  http://dl<span class="preprocessor">.google</span><span class="preprocessor">.com</span>/android/ndk/android-ndk-r8e-windows-x86<span class="preprocessor">.zip</span>
+</code></pre>
+<p>b.    设置系统变量：</p>
+<pre><code>  NDK_MODULE_PATH=<span class="formula">$<span class="special">{</span>COCOS2DX_HOME<span class="special">}</span>;$</span><span class="special">{</span>COCOS2DX_HOME<span class="special">}</span><span class="command">\cocos</span>2dx<span class="command">\platform</span><span class="command">\third</span>_party<span class="command">\android</span><span class="command">\prebuilt</span>
+</code></pre>
+<p>c.    交叉编译：</p>
+<p>  CMD环境下进入TestCpp的项目目录执行ndk-build：</p>
+  <figure class="highlight lang-c"><table><tr><td class="gutter"><pre>1
 2
 </pre></td><td class="code"><pre>cd proj<span class="preprocessor">.android</span>
 <span class="label">E:</span>\android-ndk-r8e\ndk-build<span class="preprocessor">.cmd</span>
 </pre></td></tr></table></figure>
-第一次编译时间较长，编译结束会生成.so文件</p>
-<p><a href="http://www.ggggamer.com/wp-content/uploads/64/ndk03.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/ndk03.png" alt="" title="ndk03"></a></p>
+
+<p>  第一次编译时间较长，编译结束会生成.so文件</p>
+<p>  <a href="http://www.ggggamer.com/wp-content/uploads/64/ndk03.png"><img src="http://www.ggggamer.com/wp-content/uploads/64/ndk03.png" alt="" title="ndk03"></a></p>
+</li>
+</ol>
 <p>再次运行项目，搞定。</p>
 
     

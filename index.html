@@ -340,9 +340,9 @@ CCLabelTTF
   <section class="entry">
     
       <p><strong>更新:<a href="http://www.cocos2d-x.org/projects/cocos2d-x/wiki/Release_Note_v213">cocos2d-2.1rc0-x-2.1.3.zip @ May.01, 2013</a>已修改，避免了前后台切换时资源的释放和加载。</strong></p>
-<p>最近游戏在Android真机上出现一个“奇怪”的问题：当游戏被按下电源键置为后台之后再次按电源键置为前台运行时黑屏。IOS、win32的模拟器和真机均正常。</p>
-<p>从节点的visible属性、opacity属性，再到节点是否还在节点树中都查了一遍，折腾半天，最后定位到可能是CCTexture2D的问题。
-在Android环境下，CC_ENABLE_CACHE_TEXTURE_DATA 被开启。
+<p>最近游戏在Android真机上出现一个“奇怪”的问题：当游戏被按下电源键置为后台之后再次按电源键置为前台运行时黑屏。IOS、win32的模拟器和真机均正常。
+从节点的visible属性、opacity属性，再到节点是否还在节点树中都查了一遍，折腾半天，最后定位到可能是CCTexture2D的问题。<br>在Android环境下，<code>CC_ENABLE_CACHE_TEXTURE_DATA</code>被开启。</p>
+
     
   </section>
   <footer>
@@ -385,13 +385,13 @@ CCLabelTTF
     
       <p>用Swing做界面时很多童鞋会跟我一样遇到图片在开发环境中显示正常，导出jar包后无法显示的问题。</p>
 <p>这里说下我遇到的几种情况。</p>
-<p>1.资源加载方式问题</p>
-<p>在很多Swing开发的教程中会有这样的代码：</p>
-<p><figure class="highlight lang-java"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>JLabel backImg = <span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(<span class="string">"res/xxx.png"</span>));
-</pre></td></tr></table></figure>
-这个在开发环境中是可以正常显示的，可是如果用Eclipse等工具导出为Runnable Jar File之后，图片加载不进来。
-
+<ol>
+<li><p>资源加载方式问题</p>
+<p> 在很多Swing开发的教程中会有这样的代码：</p>
+<pre><code> JLabel backImg = <span class="keyword">new</span> JLabel(<span class="keyword">new</span> ImageIcon(<span class="string">"res/xxx.png"</span>));
+</code></pre>
+<p> 这个在开发环境中是可以正常显示的，可是如果用Eclipse等工具导出为Runnable Jar File之后，图片加载不进来。</p>
+ 
     
   </section>
   <footer>
@@ -432,10 +432,7 @@ CCLabelTTF
   </header>
   <section class="entry">
     
-      <p>注：本文的最终目标是：</p>
-<p>开发和调试过程全部在windows平台VS中进行。</p>
-<p>你可以选择使用Cygwin或windows的控制台来生成so文件，用Eclipse打Android包(.apk)。</p>
-<p>在虚拟机或者MAC机器上使用XCode打IOS包(.ipa)。
+      <p>注：本文的最终目标是：<br>开发和调试过程全部在windows平台VS中进行。<br>你可以选择使用Cygwin或windows的控制台来生成so文件，用Eclipse打Android包(.apk)。<br>在虚拟机或者MAC机器上使用XCode打IOS包(.ipa)。  
     
   </section>
   <footer>
